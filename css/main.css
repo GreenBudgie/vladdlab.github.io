@@ -87,6 +87,19 @@ video {
     width: 100%;
 }
 
+.comments__info_empty {
+    
+}
+
+.comments__info {
+    width: 100%;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
 .news__comments_wrapper > p {
     font-size: 1.1rem;
     text-align: left;
