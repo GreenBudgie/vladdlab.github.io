@@ -41,7 +41,7 @@ video {
     margin: 0.6em 0 0.7em;
     position: relative;
 }
-.news__brief::after {
+.news__brief::after, .news__comment::after {
     position: absolute;
     content: '';
     width: 100%;
@@ -81,4 +81,19 @@ video {
 }
 .news__comment_add button:active {
     background-color: rgb(241, 136, 124);
+}
+
+.news__comments_wrapper {
+    width: 100%;
+}
+
+.news__comments_wrapper > p {
+    font-size: 1.1rem;
+    text-align: left;
+}
+
+.news__comment {
+    margin: 1em 0 0.7em;
+    font-size: 1.1rem;
+    position: relative;
 }

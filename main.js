@@ -1,5 +1,30 @@
-// кажется тут должен быть код...
+let comments = [];
+loadCommentsFromStorage();
 
-// Подсказка №1: Содержимое тега textarea хранится в его свойстве value
+document.querySelector('.news__comment_add button').addEventListener('click', addCommentButtonClick);
 
-// Подсказка №2: Не забывайте, что LocalStorage и SessionStorage могут хранить только строки в виде пар ключ/значение
+function addCommentButtonClick(event) {
+  let textarea = document.querySelector('.news__comment_add textarea');
+  if(textarea.value) {
+    htmlAppendComment(textarea.value);
+    comments.push(textarea.value);
+    saveToStorage();
+  }
+}
+
+function htmlAppendComment(commentText) {
+  let commentsSection = document.querySelector('.news__comments_wrapper');
+  commentsSection.insertAdjacentHTML('afterbegin', `<div class="news__comment">${commentText}</div>`);
+}
+
+function saveToStorage() {
+  sessionStorage.setItem('comments', JSON.stringify(comments));
+}
+
+function loadCommentsFromStorage() {
+  let loadedComments = sessionStorage.getItem('comments');
+  if(loadedComments != null) {
+    comments = JSON.parse(loadedComments);
+    comments.forEach(comment => htmlAppendComment(comment));
+  }
+}
