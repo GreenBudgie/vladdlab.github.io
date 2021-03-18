@@ -1,34 +1,73 @@
+class NewsComment {
+
+  constructor(author, text) {
+    this.author = author;
+    this.text = text;
+    this.date = Date.now();
+    this.id = currentId++;
+  }
+
+  getCreationDateFormatted() {
+    let options = {
+      year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: 'numeric', minute: 'numeric', hour12: false
+    };
+    return new Intl.DateTimeFormat('en-US', options).format(this.date);
+  }
+
+  toHTML() {
+    return `
+    <div class="news__comment" commentId="${this.id}">
+      <div class="news__comment_header_wrapper">
+          <p class="news__comment_author">${this.author}</p>
+          <button class="news__comment_delete"></button>
+      </div>
+      <p class="news__comment_text">${this.text}</p>
+      <p class="news__comment_date">${this.getCreationDateFormatted()}</p>
+    </div>`;
+  }
+
+}
+
+let currentId = 0;
 let comments = [];
-loadCommentsFromStorage();
 
 document.querySelector('.news__comment_add button').addEventListener('click', addCommentButtonClick);
 
 function addCommentButtonClick(event) {
   let textarea = document.querySelector('.news__comment_add textarea');
-  if(textarea.value) {
-    htmlAppendComment(textarea.value);
-    comments.push(textarea.value);
-    saveToStorage();
+  let author = document.querySelector('.news__comment_add input');
+  if(textarea.value && author.value) {
+    let comment = new NewsComment(author.value, textarea.value);
+    htmlAppendComment(comment);
+    comments.push(comment);
     updateCommentsInfo();
   }
 }
 
-function htmlAppendComment(commentText) {
+function deleteCommentButtonClick(event) {
+  let commentId = event.target.parentNode.parentNode.getAttribute("commentId");
+  deleteComment(commentId);
+}
+
+function deleteComment(commentId) {
+  comments = comments.filter(comment => comment.id != commentId);
+
+  let htmlComments = document.getElementsByClassName("news__comment");
+  for(let comment of htmlComments) {
+    if(comment.getAttribute("commentId") == commentId) {
+      comment.parentNode.removeChild(comment);
+      break;
+    }
+  }
+
+  updateCommentsInfo();
+}
+
+function htmlAppendComment(comment) {
   let commentsSection = document.querySelector('.news__comments_wrapper');
-  commentsSection.insertAdjacentHTML('afterbegin', `<div class="news__comment">${commentText}</div>`);
-}
-
-function saveToStorage() {
-  sessionStorage.setItem('comments', JSON.stringify(comments));
-}
-
-function loadCommentsFromStorage() {
-  let loadedComments = sessionStorage.getItem('comments');
-  if(loadedComments != null) {
-    comments = JSON.parse(loadedComments);
-    comments.forEach(comment => htmlAppendComment(comment));
-    updateCommentsInfo();
-  }
+  commentsSection.insertAdjacentHTML('afterbegin', comment.toHTML());
+  document.querySelector('.news__comment_delete').addEventListener('click', deleteCommentButtonClick);
 }
 
 function updateCommentsInfo() {
@@ -62,5 +101,10 @@ function updateCommentsInfo() {
     }
 
     commentsInfo.textContent = `${commentsNumber} ${wordToUse}`;
+  } else {
+    let commentsInfoEmpty = document.querySelector('.comments__info_empty');
+    commentsInfoEmpty.classList.remove('hidden');
+    let commentsInfo = document.querySelector('.comments__info');
+    commentsInfo.classList.add('hidden');
   }
 }

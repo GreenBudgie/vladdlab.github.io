@@ -53,42 +53,52 @@ video {
 
 .news__comment_add {
     width: 100%;
-    display: flex;
-    align-items: flex-start;
     margin-top: 1.5em;
     position: relative;
 }
 
-.news__comment_add textarea {
+.news__comment_add_wrapper {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+
+.news__comment_add input {
+    margin-bottom: 1em;
+}
+
+.news__comment_add textarea, .news__comment_add input {
     flex: 1 0 auto;
     margin-right: 1.5em;
     font-family: 'Montserrat', sans-serif;
     padding: 1em;
     box-sizing: border-box;
+    resize: none;
+    border: 1px solid gray;
 }
 .news__comment_add button {
     max-width: 200px;
     border: none;
     padding: 0.3em 0.8em;
-    background-color: rgb(245, 164, 155);
+    background-color: rgb(112, 128, 144);
     color: white;
     font-size: 1.3rem;
     outline: none;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
+
 .news__comment_add button:hover {
-    background-color: rgb(241, 153, 143);
+    background-color: rgb(139, 153, 167);
 }
 .news__comment_add button:active {
-    background-color: rgb(241, 136, 124);
+    background-color: rgb(139, 153, 167);
 }
 
 .news__comments_wrapper {
     width: 100%;
-}
-
-.comments__info_empty {
-    
+    height: 100%;
 }
 
 .comments__info {
@@ -109,4 +119,51 @@ video {
     margin: 1em 0 0.7em;
     font-size: 1.1rem;
     position: relative;
+}
+
+.news__comment_header_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.news__comment_delete {
+    cursor: pointer;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: none;
+    outline: none;
+    border: none;
+}
+
+.news__comment_delete::before, .news__comment_delete::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 40px;
+    height: 2px;
+    background: gray;
+}
+
+.news__comment_delete::after {
+    transform: translateX(-50%) rotate(-45deg);
+}
+
+.news__comment_author {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.news__comment_date {
+    font-size: 0.9rem;
+    color: rgb(150, 150, 150);
+}
+
+#scroll_helper {
+    height: 250px;
 }
