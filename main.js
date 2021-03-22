@@ -29,17 +29,34 @@ class NewsComment {
 
 }
 
+let sort = "descending";
 let currentId = 0;
 let comments = [];
 
 document.querySelector('.news__comment_add button').addEventListener('click', addCommentButtonClick);
+document.querySelector('.comments__info_wrapper button').addEventListener('click', sortButtonClick);
+
+function sortButtonClick(event) {
+  changeSorting();
+  let arrow = event.target;
+  arrow.classList.remove("sort-descending");
+  arrow.classList.remove("sort-ascending");
+  arrow.classList.add(`sort-${sort}`);
+}
+
+function changeSorting() {
+  sort = sort == "descending" ? "ascending" : "descending";
+  let sortFn = (a, b) => sort == "descending" ? a.date > b.date : a.date < b.date;
+  comments.sort((a, b) => sortFn(a, b) ? 1 : -1);
+  rearrangeHTMLComments();
+}
 
 function addCommentButtonClick(event) {
   let textarea = document.querySelector('.news__comment_add textarea');
   let author = document.querySelector('.news__comment_add input');
   if(textarea.value && author.value) {
     let comment = new NewsComment(author.value, textarea.value);
-    htmlAppendComment(comment);
+    htmlAppendComment(comment, true);
     comments.push(comment);
     updateCommentsInfo();
   }
@@ -64,9 +81,18 @@ function deleteComment(commentId) {
   updateCommentsInfo();
 }
 
-function htmlAppendComment(comment) {
+function clearHTMLComments() {
+  document.querySelector(".news__comments_wrapper").innerHTML = '';
+}
+
+function rearrangeHTMLComments() {
+  clearHTMLComments();
+  comments.forEach(comment => htmlAppendComment(comment, false));
+}
+
+function htmlAppendComment(comment, applySorting) {
   let commentsSection = document.querySelector('.news__comments_wrapper');
-  commentsSection.insertAdjacentHTML('afterbegin', comment.toHTML());
+  commentsSection.insertAdjacentHTML(sort == "descending" || !applySorting ? 'afterbegin' : 'beforeend', comment.toHTML());
   document.querySelector('.news__comment_delete').addEventListener('click', deleteCommentButtonClick);
 }
 
@@ -76,6 +102,8 @@ function updateCommentsInfo() {
     commentsInfoEmpty.classList.add('hidden');
     let commentsInfo = document.querySelector('.comments__info');
     commentsInfo.classList.remove('hidden');
+    let sorting = document.querySelector('.comments__info_wrapper span');
+    sorting.classList.remove("hidden");
     
     //Определяем правильное окончание слова для количества комментариев (1 комментарИЙ, 12 комментариЕВ, 24 комментарИЯ...)
     let wordRelations = [
@@ -106,5 +134,7 @@ function updateCommentsInfo() {
     commentsInfoEmpty.classList.remove('hidden');
     let commentsInfo = document.querySelector('.comments__info');
     commentsInfo.classList.add('hidden');
+    let sorting = document.querySelector('.comments__info_wrapper span');
+    sorting.classList.add("hidden");
   }
 }
